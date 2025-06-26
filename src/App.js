@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
+import activities from './data/activitiesData';
 
 function App() {
   useEffect(() => {
@@ -382,142 +383,61 @@ function App() {
 
           {/* 벙 목록 */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {/* 벙 카드 1 */}
-            <div className="activity-card card-hover bg-green-50 rounded-3xl p-6 border-2 border-green-200">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center">
-                  <span className="mr-2">😊</span>
-                  J
+            {activities.map((activity, index) => (
+              <div key={index} className={`activity-card card-hover ${activity.bgColor} rounded-3xl p-6 border-2 ${activity.borderColor}`}>
+                <div className="flex justify-between items-start mb-4">
+                  <div className={`bg-gradient-to-r ${activity.typeBgGradient} text-white px-4 py-2 rounded-full text-sm font-bold flex items-center`}>
+                    <span className="mr-2">{activity.typeEmoji}</span>
+                    {activity.type}
+                  </div>
+                  <div className="text-gray-600 text-sm font-medium">
+                    {activity.date}
+                  </div>
                 </div>
-                <div className="text-gray-600 text-sm font-medium">
-                  6월 25일 (수)
+                
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  {activity.title}
+                </h3>
+                
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="mr-2">⏰</span>
+                    {activity.time}
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="mr-2">📍</span>
+                    {activity.location}
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span className="mr-2">👥</span>
+                    {activity.attendeesCount}명 참석
+                  </div>
                 </div>
+                
+                <div className="bg-white/80 rounded-xl p-3 mb-4">
+                  <div className="text-gray-700 text-sm">
+                    <strong className="text-indigo-600">참석자:</strong> {activity.attendees}
+                  </div>
+                </div>
+                
+                {activity.note && (
+                  <div className={`${activity.noteBgColor} ${activity.noteBorderColor ? `border ${activity.noteBorderColor}` : ''} rounded-xl p-3 mb-4`}>
+                    <div className={`${activity.noteTextColor} text-xs font-medium`}>📝 {activity.note}</div>
+                  </div>
+                )}
+                
+                {activity.menu && (
+                  <div className={`${activity.menuBgColor} ${activity.menuBorderColor ? `border ${activity.menuBorderColor}` : ''} rounded-xl p-3 mb-4`}>
+                    <div className={`${activity.menuTextColor} text-sm`}><strong>🍽️ 메뉴:</strong> {activity.menu}</div>
+                  </div>
+                )}
+                
+                <a href={activity.reviewLink} target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 inline-flex items-center w-full justify-center shadow-lg">
+                  <span className="mr-2">🔗</span>
+                  벙 후기 보기
+                </a>
               </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                행복해질때도 된거같아
-              </h3>
-              
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">⏰</span>
-                  19:00
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">📍</span>
-                  종로3가 / 행福한집
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">👥</span>
-                  6명 참석
-                </div>
-              </div>
-              
-              <div className="bg-white/80 rounded-xl p-3 mb-4">
-                <div className="text-gray-700 text-sm">
-                  <strong className="text-indigo-600">참석자:</strong> 란무, 두두, 로미, 멀라 외 2명
-                </div>
-              </div>
-              
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
-                <div className="text-amber-700 text-xs font-medium">📝 늦참: 지미 (2차)</div>
-              </div>
-              
-              <a href="https://blog.naver.com/neuriviewlog/223694922358" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 inline-flex items-center w-full justify-center shadow-lg">
-                <span className="mr-2">🔗</span>
-                벙 후기 보기
-              </a>
-            </div>
-
-            {/* 벙 카드 2 */}
-            <div className="activity-card card-hover bg-green-50 rounded-3xl p-6 border-2 border-green-200">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center">
-                  <span className="mr-2">🍜</span>
-                  J
-                </div>
-                <div className="text-gray-600 text-sm font-medium">
-                  6월 26일 (목)
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                together
-              </h3>
-              
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">⏰</span>
-                  19:00
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">📍</span>
-                  회기역 / 영화장
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">👥</span>
-                  6명 참석
-                </div>
-              </div>
-              
-              <div className="bg-white/80 rounded-xl p-3 mb-4">
-                <div className="text-gray-700 text-sm">
-                  <strong className="text-indigo-600">참석자:</strong> 레몬, 피캉, 신고, 양돼 외 2명
-                </div>
-              </div>
-              
-              <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
-                <div className="text-green-700 text-sm"><strong>🍽️ 메뉴:</strong> 깐풍육, 동파육, 누룽지탕, 탕수육+ 삼선간짜장, 삼선짬뽕밥</div>
-              </div>
-              
-              <a href="https://blog.naver.com/mo_lycka/223843764169" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 inline-flex items-center w-full justify-center shadow-lg">
-                <span className="mr-2">🔗</span>
-                벙 후기 보기
-              </a>
-            </div>
-
-            {/* 벙 카드 3 */}
-            <div className="activity-card card-hover bg-red-50 rounded-3xl p-6 border-2 border-red-200">
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center">
-                  <span className="mr-2">🍻</span>
-                  A
-                </div>
-                <div className="text-gray-600 text-sm font-medium">
-                  6월 27일 (금)
-                </div>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                고사리, 그리고 덕자
-              </h3>
-              
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">⏰</span>
-                  19:00
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">📍</span>
-                  가락시장 / 하시라도, 원조포차
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <span className="mr-2">👥</span>
-                  4명 참석
-                </div>
-              </div>
-              
-              <div className="bg-white/80 rounded-xl p-3 mb-4">
-                <div className="text-gray-700 text-sm">
-                  <strong className="text-indigo-600">참석자:</strong> 항, 지미, 라면, 덕배
-                </div>
-              </div>
-              
-              <a href="https://blog.naver.com/mmuki/223770116832" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 inline-flex items-center w-full justify-center shadow-lg">
-                <span className="mr-2">🔗</span>
-                벙 후기 보기
-              </a>
-            </div>
+            ))}
           </div>
 
           <div className="text-center mt-16">
