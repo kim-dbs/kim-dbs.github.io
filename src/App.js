@@ -434,7 +434,7 @@ function App() {
                 
                 <a href={activity.reviewLink} target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 inline-flex items-center w-full justify-center shadow-lg">
                   <span className="mr-2">🔗</span>
-                  벙 후기 보기
+                  벙 장소 링크 보기
                 </a>
               </div>
             ))}
