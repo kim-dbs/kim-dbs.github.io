@@ -1,22 +1,5 @@
 const activities = [
-  {
-    type: "J",
-    typeEmoji: "😊",
-    date: "6월 25일 (수)",
-    title: "행복해질때도 된거같아",
-    time: "19:00",
-    location: "종로3가 / 행福한집",
-    attendeesCount: 6,
-    attendees: "란무, 두두, 로미, 멀라 외 2명",
-    note: "늦참: 지미 (2차)",
-    reviewLink: "https://blog.naver.com/neuriviewlog/223694922358",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
-    typeBgGradient: "from-green-500 to-emerald-500",
-    noteBgColor: "bg-amber-50",
-    noteBorderColor: "border-amber-200",
-    noteTextColor: "text-amber-700"
-  },
+
   {
     type: "J",
     typeEmoji: "🍜",
