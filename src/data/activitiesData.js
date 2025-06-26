@@ -92,6 +92,20 @@ const activities = [
   },
   {
     type: "J",
+    typeEmoji: "🥞",
+    date: "7월 2일 (수)",
+    title: "전을 팔다 이모카세로 (IMOKASE)",
+    time: "19:00",
+    location: "응암 / 불티나 이모네전",
+    attendeesCount: 2,
+    attendees: "피캉, 지미",
+    reviewLink: "https://m.blog.naver.com/handaddo/223409102270",
+    bgColor: "bg-green-50",
+    borderColor: "border-green-200",
+    typeBgGradient: "from-green-500 to-emerald-500"
+  },
+  {
+    type: "J",
     typeEmoji: "🍖",
     date: "7월 4일 (금)",
     title: "대물",
