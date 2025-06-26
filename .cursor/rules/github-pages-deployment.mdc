@@ -1,0 +1,116 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# GitHub Pages 배포 가이드
+
+## 배포 설정
+
+### package.json 설정
+```json
+{
+  "name": "ggulmat-website",
+  "homepage": "https://username.github.io/ggulmat",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "devDependencies": {
+    "gh-pages": "^latest"
+  }
+}
+```
+
+### GitHub Actions 워크플로우
+파일 위치: [.github/workflows/deploy.yml](mdc:.github/workflows/deploy.yml)
+
+```yaml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * 0'  # 매주 일요일 자동 배포
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+```
+
+## 라우팅 설정
+
+### React Router 설정 (HashRouter 사용)
+```javascript
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/meetings" element={<Meetings />} />
+        <Route path="/gallery" element={<Gallery />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+## 정적 파일 관리
+
+### public 폴더 구조
+```
+public/
+├── index.html
+├── favicon.ico
+├── manifest.json
+├── robots.txt
+└── images/
+    ├── logo.png
+    └── meetings/
+```
+
+### 데이터 파일 관리
+- 모임 데이터: [src/data/meetings.json](mdc:src/data/meetings.json)
+- 멤버 정보: [src/data/members.json](mdc:src/data/members.json)
+- 설정 정보: [src/data/config.json](mdc:src/data/config.json)
+
+## 배치 작업 구현
+
+### 데이터 자동 업데이트
+- Google Sheets API 연동 (선택사항)
+- JSON 파일 자동 생성 스크립트
+- 이미지 최적화 자동화
+
+### 성능 최적화
+- 이미지 lazy loading
+- 코드 스플리팅
+- 서비스 워커 활용 (PWA)
+
+## 도메인 설정 (선택사항)
+- CNAME 파일 생성
+- 커스텀 도메인 연결
+- HTTPS 설정 확인
+
+## 모니터링 및 분석
+- Google Analytics 연동
+- GitHub Pages 사용량 모니터링
+- 성능 지표 추적

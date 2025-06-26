@@ -1,0 +1,68 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 꿀맛 프로젝트 코딩 표준
+
+## JavaScript/React 코딩 스타일
+
+### 파일 명명 규칙
+- 컴포넌트 파일: PascalCase (예: `MeetingCard.js`)
+- 유틸리티 파일: camelCase (예: `dateUtils.js`)
+- 상수 파일: UPPER_CASE (예: `API_CONSTANTS.js`)
+
+### 컴포넌트 작성 규칙
+```javascript
+// 함수형 컴포넌트 선호
+const MeetingCard = ({ title, date, description }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  return (
+    <div className="meeting-card">
+      {/* JSX 내용 */}
+    </div>
+  );
+};
+
+export default MeetingCard;
+```
+
+### Props 및 State 관리
+- PropTypes 또는 TypeScript 사용 권장
+- 복잡한 상태는 useReducer 고려
+- 전역 상태가 필요한 경우 Context API 활용
+
+### CSS 스타일링 가이드
+- BEM 방법론 또는 CSS Modules 사용
+- 반응형 디자인 필수 (모바일 우선)
+- CSS 변수 활용한 테마 관리
+
+### 데이터 처리 규칙
+- API 호출은 별도 서비스 파일로 분리
+- 에러 핸들링 필수
+- 로딩 상태 관리
+
+### GitHub Pages 최적화
+- 이미지 최적화 (WebP 형식 선호)
+- 번들 크기 최소화
+- SEO 메타 태그 설정
+
+## 모임 데이터 구조 예시
+```javascript
+const meetingData = {
+  id: 'meeting-001',
+  title: '꿀맛 정기모임',
+  date: '2024-01-15',
+  time: '19:00',
+  location: '강남역 근처',
+  participants: [],
+  description: '모임 설명',
+  photos: []
+};
+```
+
+## 배치 작업 가이드
+- 매주 일요일 자동 배포
+- 데이터 백업 및 검증
+- 성능 모니터링 리포트 생성

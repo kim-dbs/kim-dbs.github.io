@@ -1,0 +1,67 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 꿀맛 모임 웹사이트 프로젝트 가이드
+
+## 프로젝트 개요
+- **목적**: 꿀맛 모임 관련 웹홈페이지 개발
+- **배포**: GitHub Pages 활용
+- **기술 스택**: React, JavaScript, HTML, CSS
+- **데이터 관리**: 클라이언트 사이드 데이터베이스 (JSON, LocalStorage 등)
+- **배치 작업**: GitHub Actions를 통한 자동화
+
+## 프로젝트 구조
+```
+ggulmat/
+├── public/
+│   ├── index.html
+│   └── favicon.ico
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── utils/
+│   ├── data/
+│   └── App.js
+├── package.json
+├── .github/
+│   └── workflows/
+│       └── deploy.yml
+└── README.md
+```
+
+## 개발 가이드라인
+
+### React 컴포넌트 구조
+- 함수형 컴포넌트 사용
+- React Hooks 활용 (useState, useEffect 등)
+- 재사용 가능한 컴포넌트 설계
+
+### GitHub Pages 배포 고려사항
+- 정적 사이트 생성 (React build)
+- 라우팅: HashRouter 사용 (GitHub Pages 제한사항)
+- 상대 경로 사용
+
+### 데이터 관리 전략
+- JSON 파일을 통한 정적 데이터 관리
+- LocalStorage 활용한 사용자 설정
+- GitHub API를 통한 동적 콘텐츠 (필요시)
+
+### 배치 작업 구현
+- GitHub Actions를 통한 자동 배포
+- 데이터 업데이트 자동화
+- 정기적인 콘텐츠 갱신
+
+## 권장 라이브러리
+- React Router (Hash Router)
+- Styled Components 또는 CSS Modules
+- Axios (API 호출)
+- Date-fns (날짜 처리)
+
+## 모임 관련 기능 아이디어
+- 모임 일정 관리
+- 멤버 소개
+- 활동 갤러리
+- 공지사항
+- 연락처 정보
