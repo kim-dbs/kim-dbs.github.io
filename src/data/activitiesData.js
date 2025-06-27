@@ -1,24 +1,6 @@
 const activities = [
 
   {
-    type: "J",
-    typeEmoji: "🍜",
-    date: "6월 26일 (목)",
-    title: "together",
-    time: "19:00",
-    location: "회기역 / 영화장",
-    attendeesCount: 6,
-    attendees: "레몬, 피캉, 신고, 양돼, 빽돼, 로미",
-    menu: "깐풍육, 동파육, 누룽지탕, 탕수육+ 삼선간짜장, 삼선짬뽕밥",
-    reviewLink: "https://blog.naver.com/mo_lycka/223843764169",
-    bgColor: "bg-green-50",
-    borderColor: "border-green-200",
-    typeBgGradient: "from-green-500 to-emerald-500",
-    menuBgColor: "bg-green-50",
-    menuBorderColor: "border-green-200",
-    menuTextColor: "text-green-700"
-  },
-  {
     type: "A",
     typeEmoji: "🍻",
     date: "6월 27일 (금)",
