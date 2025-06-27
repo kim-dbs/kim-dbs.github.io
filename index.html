@@ -11,6 +11,7 @@
     <link rel="apple-touch-icon" href="images/favicon.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
@@ -144,6 +145,73 @@
         
         #chat-messages::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
+        
+        /* 마크다운 스타일링 */
+        .prose {
+            max-width: none;
+        }
+        
+        .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .prose p {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .prose ul, .prose ol {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+            padding-left: 1rem;
+        }
+        
+        .prose li {
+            margin-top: 0.125rem;
+            margin-bottom: 0.125rem;
+        }
+        
+        .prose code {
+            background-color: #f3f4f6;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .prose pre {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+        }
+        
+        .prose pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .prose strong {
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .prose a {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+        
+        .prose blockquote {
+            border-left: 4px solid #e5e7eb;
+            padding-left: 1rem;
+            margin: 0.5rem 0;
+            font-style: italic;
+            color: #6b7280;
         }
     </style>
 </head>
@@ -881,10 +949,10 @@
         // FastAPI 백엔드 URL (Azure Container Apps)
         const BACKEND_URL = 'https://ggulmat-api.ashywater-29d11eec.eastasia.azurecontainerapps.io';
         
-        // AI 응답 함수 (FastAPI 백엔드 호출)
-        async function getAIResponse(userMessage) {
+        // AI 스트리밍 응답 함수 (FastAPI 백엔드 호출)
+        async function getAIResponseStream(userMessage, messageElement) {
             try {
-                const response = await fetch(`${BACKEND_URL}/chat`, {
+                const response = await fetch(`${BACKEND_URL}/chat/stream`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -898,13 +966,64 @@
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                return data.message;
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullMessage = '';
+                
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n');
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.slice(6));
+                                if (data.content) {
+                                    fullMessage += data.content;
+                                    // 마크다운을 HTML로 변환하여 실시간 업데이트
+                                    const htmlContent = marked.parse(fullMessage);
+                                    messageElement.innerHTML = `
+                                        <div class="flex items-start space-x-3">
+                                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                                <span class="text-white text-sm">🤖</span>
+                                            </div>
+                                            <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-xs prose prose-sm">
+                                                ${htmlContent}
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                                if (data.is_complete) {
+                                    break;
+                                }
+                            } catch (e) {
+                                console.error('JSON 파싱 오류:', e);
+                            }
+                        }
+                    }
+                }
+                
+                return fullMessage;
                 
             } catch (error) {
-                console.error('백엔드 호출 오류:', error);
+                console.error('스트리밍 오류:', error);
                 // 백엔드 오류 시 로컬 응답으로 폴백
-                return getLocalResponse(userMessage);
+                const localResponse = getLocalResponse(userMessage);
+                const htmlContent = marked.parse(localResponse);
+                messageElement.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-sm">🤖</span>
+                        </div>
+                        <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-xs prose prose-sm">
+                            ${htmlContent}
+                        </div>
+                    </div>
+                `;
+                return localResponse;
             }
         }
         
@@ -995,7 +1114,7 @@
 구체적인 질문을 해주시면 더 자세한 답변을 드릴게요! 😊`;
         }
 
-        // 메시지 전송 함수
+        // 메시지 전송 함수 (스트리밍)
         async function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
@@ -1006,26 +1125,40 @@
             addMessage(message, true);
             input.value = '';
             
-            // 타이핑 인디케이터 표시
+            // AI 응답용 빈 메시지 생성
             isTyping = true;
-            const typingMessage = addMessage('', false, true);
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'mb-4';
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
             try {
-                // AI 응답 받기
-                const aiResponse = await getAIResponse(message);
-                typingMessage.remove();
-                addMessage(aiResponse, false);
+                // 스트리밍 AI 응답 받기
+                await getAIResponseStream(message, messageDiv);
             } catch (error) {
                 console.error('메시지 전송 오류:', error);
-                typingMessage.remove();
-                addMessage('죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.', false);
+                const htmlContent = marked.parse('죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.');
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-white text-sm">🤖</span>
+                        </div>
+                        <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-xs prose prose-sm">
+                            ${htmlContent}
+                        </div>
+                    </div>
+                `;
             } finally {
                 isTyping = false;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         }
 
         // 퀵 액션 처리
         function handleQuickAction(action) {
+            if (isTyping) return; // 이미 메시지 처리 중이면 무시
+            
             const quickActions = {
                 '🍽️ 맛집 추천': '맛집 추천해주세요',
                 '📅 벙 참여 방법': '벙 참여 방법을 알려주세요',
