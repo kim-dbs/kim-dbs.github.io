@@ -71,6 +71,63 @@
             background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
             color: white !important;
         }
+        
+        /* 챗봇 모바일 반응형 */
+        @media (max-width: 768px) {
+            #chatbot-interface {
+                width: calc(100vw - 2rem);
+                height: calc(100vh - 2rem);
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                max-width: none;
+            }
+            
+            #chatbot-toggle {
+                bottom: 2rem;
+                right: 2rem;
+            }
+            
+            .quick-action-btn {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem;
+            }
+        }
+        
+        /* 챗봇 애니메이션 */
+        @keyframes slideInUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .message-enter {
+            animation: slideInUp 0.3s ease-out;
+        }
+        
+        /* 스크롤바 스타일링 */
+        #chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 10px;
+        }
+        
+        #chat-messages::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -491,6 +548,100 @@
         </div>
     </section>
 
+    <!-- Chatbot Floating Button -->
+    <div id="chatbot-toggle" class="fixed bottom-8 right-8 z-50 cursor-pointer transform transition-all duration-300 hover:scale-110">
+        <div class="relative">
+            <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-2xl flex items-center justify-center">
+                <svg id="chat-icon" class="w-8 h-8 text-white transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                <svg id="close-icon" class="w-8 h-8 text-white transition-all duration-300 absolute opacity-0 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </div>
+            <!-- Notification Dot -->
+            <div id="notification-dot" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
+                <div class="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Interface -->
+    <div id="chatbot-interface" class="fixed bottom-8 right-8 z-40 w-96 h-[600px] bg-white rounded-3xl shadow-2xl border border-gray-200 transform transition-all duration-500 scale-0 opacity-0 origin-bottom-right">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-3xl p-6 text-white">
+            <div class="flex items-center space-x-4">
+                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <span class="text-2xl">🍯</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold">꿀맛 AI 어시스턴트</h3>
+                    <p class="text-sm text-white/80">맛집 추천과 벙 관련 질문을 도와드려요!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto h-[400px] bg-gray-50">
+            <!-- Welcome Message -->
+            <div class="mb-6">
+                <div class="flex items-start space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm">🤖</span>
+                    </div>
+                    <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-xs">
+                        <p class="text-gray-800 text-sm leading-relaxed">
+                            안녕하세요! 꿀맛빌리지 AI 어시스턴트입니다. 🍯<br><br>
+                            다음과 같은 도움을 드릴 수 있어요:
+                        </p>
+                        <div class="mt-3 space-y-1">
+                            <div class="text-xs text-gray-600">• 맛집 추천 및 정보</div>
+                            <div class="text-xs text-gray-600">• 벙 참여 방법 안내</div>
+                            <div class="text-xs text-gray-600">• 커뮤니티 규칙 설명</div>
+                            <div class="text-xs text-gray-600">• 멤버 정보 조회</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="px-6 pb-4">
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button class="quick-action-btn bg-blue-100 text-blue-700 px-3 py-2 rounded-full text-xs font-medium hover:bg-blue-200 transition-colors">
+                    🍽️ 맛집 추천
+                </button>
+                <button class="quick-action-btn bg-purple-100 text-purple-700 px-3 py-2 rounded-full text-xs font-medium hover:bg-purple-200 transition-colors">
+                    📅 벙 참여 방법
+                </button>
+                <button class="quick-action-btn bg-green-100 text-green-700 px-3 py-2 rounded-full text-xs font-medium hover:bg-green-200 transition-colors">
+                    📋 커뮤니티 규칙
+                </button>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="p-6 pt-0">
+            <div class="flex items-center space-x-3 bg-white rounded-2xl border border-gray-200 p-3 shadow-sm">
+                <input 
+                    id="chat-input" 
+                    type="text" 
+                    placeholder="메시지를 입력하세요..." 
+                    class="flex-1 outline-none text-sm placeholder-gray-500"
+                    maxlength="500"
+                >
+                <button id="send-btn" class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white hover:from-blue-600 hover:to-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="text-xs text-gray-500 mt-2 text-center">
+                AI가 생성한 답변은 참고용으로만 사용해주세요
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="py-16 bg-gray-900">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
@@ -615,9 +766,251 @@
             }
         }
 
+        // 챗봇 관련 변수들
+        let isChatbotOpen = false;
+        let isTyping = false;
+
+        // 챗봇 토글 기능
+        function toggleChatbot() {
+            const chatbotInterface = document.getElementById('chatbot-interface');
+            const chatIcon = document.getElementById('chat-icon');
+            const closeIcon = document.getElementById('close-icon');
+            const notificationDot = document.getElementById('notification-dot');
+
+            if (isChatbotOpen) {
+                // 챗봇 닫기
+                chatbotInterface.classList.add('scale-0', 'opacity-0');
+                chatbotInterface.classList.remove('scale-100', 'opacity-100');
+                chatIcon.classList.remove('opacity-0', 'rotate-180');
+                closeIcon.classList.add('opacity-0', 'rotate-180');
+                isChatbotOpen = false;
+            } else {
+                // 챗봇 열기
+                chatbotInterface.classList.remove('scale-0', 'opacity-0');
+                chatbotInterface.classList.add('scale-100', 'opacity-100');
+                chatIcon.classList.add('opacity-0', 'rotate-180');
+                closeIcon.classList.remove('opacity-0', 'rotate-180');
+                notificationDot.style.display = 'none';
+                isChatbotOpen = true;
+                
+                // 입력창에 포커스
+                setTimeout(() => {
+                    document.getElementById('chat-input').focus();
+                }, 300);
+            }
+        }
+
+        // 메시지 추가 함수
+        function addMessage(message, isUser = false, isTyping = false) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'mb-4';
+
+            if (isUser) {
+                messageDiv.innerHTML = `
+                    <div class="flex items-start space-x-3 justify-end">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-2xl rounded-tr-md p-4 shadow-sm max-w-xs">
+                            <p class="text-sm leading-relaxed">${message}</p>
+                        </div>
+                        <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
+                            <span class="text-gray-600 text-sm">👤</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                if (isTyping) {
+                    messageDiv.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white text-sm">🤖</span>
+                            </div>
+                            <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm">
+                                <div class="flex space-x-1">
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                <span class="text-white text-sm">🤖</span>
+                            </div>
+                            <div class="bg-white rounded-2xl rounded-tl-md p-4 shadow-sm max-w-xs">
+                                <p class="text-gray-800 text-sm leading-relaxed">${message}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return messageDiv;
+        }
+
+        // AI 응답 시뮬레이션 함수
+        function getAIResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // 맛집 관련 키워드
+            if (message.includes('맛집') || message.includes('추천') || message.includes('음식') || message.includes('식당')) {
+                return `🍽️ 꿀맛빌리지에서 자주 가는 맛집들을 추천드려요!
+
+**오마카세 맛집:**
+• 스시 조 - 신선한 재료와 정성스러운 서비스
+• 이모카세 - 피캉님이 추천하는 숨은 맛집
+
+**한식 맛집:**
+• 항마카세 - 항님이 자주 찾는 한식당
+• 전통 한정식 전문점들
+
+더 자세한 정보는 벙 활동을 통해 직접 경험해보세요! 🍯`;
+            }
+            
+            // 벙 참여 관련
+            if (message.includes('벙') || message.includes('참여') || message.includes('모임') || message.includes('가입')) {
+                return `📅 꿀맛빌리지 벙 참여 방법을 안내드려요!
+
+**참여 절차:**
+1. 멤버 정보 확인 (구글 시트)
+2. 벙 신청 현황 확인
+3. 멘토와 1:1 매칭
+4. 첫 벙 참석!
+
+**참석 규칙:**
+• Type A: 4주 4번 참석
+• Type B: 4주 3번 + 대화 1000개
+
+자세한 내용은 상세 가이드를 확인해주세요! 🤝`;
+            }
+            
+            // 규칙 관련
+            if (message.includes('규칙') || message.includes('지각') || message.includes('페널티')) {
+                return `📋 꿀맛빌리지 커뮤니티 규칙을 안내드려요!
+
+**멤버 인증:**
+닉네임(2글자) / 성별 / 나이(년생) / 회사지역 / 거주지역
+
+**지각 관리:**
+• 지각비: 1분당 0.04원 + 벌주
+• 당일 12시 전 사전 알림 필수
+
+**참석 관리:**
+주 1회 벙 참석이 기본 원칙입니다!
+
+더 자세한 규칙은 가이드 문서를 확인해주세요. 📖`;
+            }
+            
+            // 멤버 관련
+            if (message.includes('멤버') || message.includes('피캉') || message.includes('항') || message.includes('두두')) {
+                return `👥 꿀맛빌리지의 특별한 멤버들을 소개해드려요!
+
+**피캉님** 🐷
+• 고려대 출신의 미식가
+• 이모카세 전문가
+• 숨겨진 맛집 발굴의 달인
+
+**항님** 🍯
+• 항마카세의 전설
+• 벙 기획의 달인
+• 커뮤니티의 정신적 지주
+
+**두두광님** ⚡
+• 분위기 메이커
+• 타고난 엔터테이너
+• 신규 멤버 적응 도우미
+
+더 많은 멤버들과 함께해요! 돼지최고~~~♡`;
+            }
+            
+            // 기본 응답
+            return `안녕하세요! 🍯 꿀맛 AI 어시스턴트입니다.
+
+다음과 같은 질문을 도와드릴 수 있어요:
+• 맛집 추천 및 정보
+• 벙 참여 방법 안내  
+• 커뮤니티 규칙 설명
+• 멤버 정보 조회
+
+구체적인 질문을 해주시면 더 자세한 답변을 드릴게요! 😊`;
+        }
+
+        // 메시지 전송 함수
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (!message || isTyping) return;
+            
+            // 사용자 메시지 추가
+            addMessage(message, true);
+            input.value = '';
+            
+            // 타이핑 인디케이터 표시
+            isTyping = true;
+            const typingMessage = addMessage('', false, true);
+            
+            // AI 응답 시뮬레이션 (1-2초 지연)
+            setTimeout(() => {
+                typingMessage.remove();
+                addMessage(getAIResponse(message), false);
+                isTyping = false;
+            }, 1000 + Math.random() * 1000);
+        }
+
+        // 퀵 액션 처리
+        function handleQuickAction(action) {
+            const quickActions = {
+                '🍽️ 맛집 추천': '맛집 추천해주세요',
+                '📅 벙 참여 방법': '벙 참여 방법을 알려주세요',
+                '📋 커뮤니티 규칙': '커뮤니티 규칙을 설명해주세요'
+            };
+            
+            const message = quickActions[action];
+            if (message) {
+                document.getElementById('chat-input').value = message;
+                sendMessage();
+            }
+        }
+
         // DOM 로드 완료 후 실행
         document.addEventListener('DOMContentLoaded', function() {
             renderActivities();
+            
+            // 챗봇 이벤트 리스너들
+            document.getElementById('chatbot-toggle').addEventListener('click', toggleChatbot);
+            
+            document.getElementById('send-btn').addEventListener('click', sendMessage);
+            
+            document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // 퀵 액션 버튼들
+            document.querySelectorAll('.quick-action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    handleQuickAction(this.textContent.trim());
+                });
+            });
+            
+            // 챗봇 외부 클릭 시 닫기
+            document.addEventListener('click', function(e) {
+                const chatbotInterface = document.getElementById('chatbot-interface');
+                const chatbotToggle = document.getElementById('chatbot-toggle');
+                
+                if (isChatbotOpen && 
+                    !chatbotInterface.contains(e.target) && 
+                    !chatbotToggle.contains(e.target)) {
+                    toggleChatbot();
+                }
+            });
         });
 
         // 스크롤 시 네비게이션 배경 변경
