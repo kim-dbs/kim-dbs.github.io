@@ -878,8 +878,38 @@
             return messageDiv;
         }
 
-        // AI 응답 시뮬레이션 함수
-        function getAIResponse(userMessage) {
+        // FastAPI 백엔드 URL (Azure Container Apps)
+        const BACKEND_URL = 'https://ggulmat-api.ashywater-29d11eec.eastasia.azurecontainerapps.io';
+        
+        // AI 응답 함수 (FastAPI 백엔드 호출)
+        async function getAIResponse(userMessage) {
+            try {
+                const response = await fetch(`${BACKEND_URL}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: userMessage
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.message;
+                
+            } catch (error) {
+                console.error('백엔드 호출 오류:', error);
+                // 백엔드 오류 시 로컬 응답으로 폴백
+                return getLocalResponse(userMessage);
+            }
+        }
+        
+        // 로컬 응답 함수 (백엔드 오류 시 사용)
+        function getLocalResponse(userMessage) {
             const message = userMessage.toLowerCase();
             
             // 맛집 관련 키워드
@@ -966,7 +996,7 @@
         }
 
         // 메시지 전송 함수
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chat-input');
             const message = input.value.trim();
             
@@ -980,12 +1010,18 @@
             isTyping = true;
             const typingMessage = addMessage('', false, true);
             
-            // AI 응답 시뮬레이션 (1-2초 지연)
-            setTimeout(() => {
+            try {
+                // AI 응답 받기
+                const aiResponse = await getAIResponse(message);
                 typingMessage.remove();
-                addMessage(getAIResponse(message), false);
+                addMessage(aiResponse, false);
+            } catch (error) {
+                console.error('메시지 전송 오류:', error);
+                typingMessage.remove();
+                addMessage('죄송합니다. 일시적인 오류가 발생했습니다. 다시 시도해주세요.', false);
+            } finally {
                 isTyping = false;
-            }, 1000 + Math.random() * 1000);
+            }
         }
 
         // 퀵 액션 처리
